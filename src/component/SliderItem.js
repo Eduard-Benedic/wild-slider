@@ -5,13 +5,13 @@ import gsap from 'gsap/gsap-core'
 
 
 const SliderItem = ({url}) => {
-      const current = useRef(null)
+      const currentImage = useRef(null)
       
       useEffect(() => {
-            gsap.to(current.current, {opacity: 1, delay: 1})
-      }, [current])
+            gsap.to(currentImage.current, {opacity: 1, delay: 1})
+      }, [currentImage])
 
-      return (<img ref={current} style={{width: '100%', objectFit: 'cover', opacity: 0}} alt="okay" src={url} />)
+      return (<img ref={currentImage} style={{width: '100%', objectFit: 'cover', opacity: 0}} alt="okay" src={url} />)
 }
 
 

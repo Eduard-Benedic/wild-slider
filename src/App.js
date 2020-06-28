@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import './App.css';
 import SliderComponent from './component/SliderComponent'
 
-import {gsap} from 'gsap'
 
 
 
@@ -26,7 +25,7 @@ function App() {
                         }
             }`;
 
-            const result = await  fetch('https://pacific-earth-89422.herokuapp.com/graphql', {
+            const result = await  fetch('https://wild-cms.herokuapp.com/graphql', {
                                     method: 'POST',
                                     headers: { 'Content-Type': 'application/json' },
                                     body: JSON.stringify({ query: sliderQuery }),
@@ -39,13 +38,12 @@ function App() {
           fetchData();
       }, []);
 
-     
-      
+
   return (
   
-    <div className="App">
-      {!sliderData ? 'Please wait' : <SliderComponent  sliderData={sliderData} />}
-    </div>
+      <div className="App">
+            {sliderData &&  <SliderComponent  sliderData={sliderData} />}
+      </div>
   );
 }
 
