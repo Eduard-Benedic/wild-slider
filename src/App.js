@@ -32,7 +32,8 @@ function App() {
                               }).then(res => {
                                     return res.json()
                               })
-                            
+                              
+                              console.log(result)
             setSliderData(result.data.sliderPage.sliderSection);
       };
           fetchData();

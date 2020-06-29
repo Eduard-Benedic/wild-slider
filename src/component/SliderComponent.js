@@ -24,26 +24,16 @@ gsap.registerPlugin(Draggable, InertiaPlugin)
 
 const SliderComponent = ({sliderData}) => {
 
-
-      
-
       const [snapArr, setSnapArr] = useState([]);
       const [activeSlide, setActiveSlide] = useState(0);
       const controller = useRef(null);
       
-
       const sliderContainer = useRef(null);
-
-
 
       // let draggerInstance = {};
 
       // RUN THIS ONCE YOU HAVE A REFERENCE TO THE CONTAINER AND ITS CHILDREN
       useEffect(() => {
-
-            console.log(activeSlide, "useEffect active slide")
-            // if it is instanciated only update the activeSlide
-
             const sliderParent = sliderContainer.current
             const sliderChildren = sliderContainer.current.children;
 
@@ -62,44 +52,46 @@ const SliderComponent = ({sliderData}) => {
                    
             }
 
-       Draggable.create(sliderContainer.current, {
-                  type: 'x',
-                  inertia: true,
-                  snap: offsetsArr,
-                  bounds: '.gsap-drag',
-                  allowNativeTouchScrolling: false,
-                  zIndexBoost: false,
-                  onDrag: function() {
-                        console.log(this)
-                  }
+            Draggable.create(sliderContainer.current, {
+                        type: 'x',
+                        inertia: true,
+                        snap: offsetsArr,
+                        bounds: '.gsap-drag',
+                        allowNativeTouchScrolling: false,
+                        zIndexBoost: false,
+                        onDrag: function() {
+                              // I need to track the position so that activeSlide gets updated
+                              const endXTrack = Math.round(Math.abs(this.endX) / 600)
+                              animate('dragger', endXTrack)
+                        }
             });
-            // draggerInstance[0].id = 'dragger'
+            
 
             setSnapArr(offsetsArr);
             gsap.set(sliderParent, { x: offsetsArr[activeSlide] });   
 
       }, [sliderContainer]);
 
-      const animate = (trigger) => {
-     
+
+    
+      const animate = (trigger, draggerHint) => {
+          
             const maxNumSlides = sliderContainer.current.children.length - 1;
 
             if(trigger === 'dragger') {
-                  console.log(activeSlide, "activeSlide from dragger")
-            }
+                  setActiveSlide(draggerHint)
+            }     
 
             if(trigger === 'leftArrow') {
                  // if goes below return
                  if(activeSlide === 0) {
                        return
                  }
-
                  gsap.to(sliderContainer.current, 0.3, { x: snapArr[activeSlide - 1]}); 
                  setActiveSlide(activeSlide - 1);
             }
 
             if(trigger === 'rightArrow') {
-             
                   if(activeSlide  > maxNumSlides - 1) {
                         return
                   }
@@ -112,10 +104,10 @@ const SliderComponent = ({sliderData}) => {
             <StyledGsapDrag className="gsap-drag">
                   <StyledSliderContainer ref={sliderContainer}>
                         {sliderData.map((image) => {
-                              return <SliderItem  key={image.id} url={`https://pacific-earth-89422.herokuapp.com${image.sliderImage.url}`}/>  
+                              return <SliderItem  key={image.id} url={`https://wild-cms.herokuapp.com${image.sliderImage.url}`}/>  
                         })} 
                   </StyledSliderContainer>
-                  <Controller ref={controller}>  
+                  <StyledController ref={controller}>  
                         <StyledLeftArrow onClick={(e) =>  animate(e.currentTarget.id)}
                                          id="leftArrow">
                               <Arrow fill={'black'} height={10} width={30}/>
@@ -123,7 +115,7 @@ const SliderComponent = ({sliderData}) => {
                         <StyledArrow id="rightArrow" onClick={(e) =>  animate(e.currentTarget.id) }>
                               <Arrow  height={10} fill={'black'} width={30}/>
                         </StyledArrow>
-                  </Controller>
+                  </StyledController>
             </StyledGsapDrag>
       )
 }
@@ -142,7 +134,7 @@ const StyledSliderContainer = styled.div`
 `;
 
 
-const Controller = styled.div`
+const StyledController = styled.div`
       position: absolute;
       bottom: 0;
       right: 0;
